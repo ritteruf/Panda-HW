@@ -1,0 +1,66 @@
+import pandas as pd
+
+file_to_load = "Resources/purchase_data.csv"
+
+purchase_data = pd.read_csv(file_to_load)
+
+player_count = df['SN'].count()
+player_count
+pd.DataFrame([player_count], columns = ["Total Players"])
+
+pd.DataFrame([unique_items], columns = ["Unique Items"])
+pd.DataFrame([avg_pur_price], columns = ["Average Purchase price"])
+pd.DataFrame([total_purchases], columns = ["Total Purchases"])
+pd.DataFrame([total_revenue], columns = ["Total Revenue"])
+
+total_gender = df["Gender"].count()
+male = df["Gender"].value_counts()['Male']
+male_percent = male/total_gender * 100
+
+
+female = df["Gender"].value_counts()['Female']
+female_percent = female/total_gender * 100
+
+other = df["Gender"].value_counts()['Other / Non-Disclosed']
+other_percent = other/total_gender * 100
+
+gender_groups = df.groupby(['Gender'])
+purchase_count = gender_groups.count()["Price"]
+
+avg_pur_count = gender_groups.mean()["Price"]
+
+total_pur_value = gender_groups.sum()["Price"]
+
+group_names = ['<10', '10-14', '15-19', '20-24', '25-29', '30-34', '35-39', '40+']
+age_df = pd.DataFrame(df)
+
+age_df["Age Range"] = pd.cut(age_df["Age"], 8, labels=group_names)
+               age_groups = df.groupby(['Age Range'])
+               
+Purchase_data = df.groupby(['Age'])
+
+purchase_count = Purchase_data.count()["Price"]
+
+avg_pur_count = Purchase_data.mean()["Price"]
+
+total_pur_value = Purchase_data.sum()["Price"]
+
+pur_analysis = pd.DataFrame({
+    
+    "Purchase Count": purchase_count,
+    'Average Purchase Price': avg_pur_count,
+    'Total Purchase Value': total_pur_value,
+})
+
+merge1 = df.groupby("Item Name").sum().reset_index()
+merge2 = df.groupby("Item ID").sum().reset_index()
+merge3 = df.groupby("Item Name").count().reset_index()
+
+merge_df1 = pd.merge(merge1, merge2, on="Price")
+merge_df2 = pd.merge(merge3, merge_df1, on="Item Name")
+
+merge_df2["Gender"] = (merge_df2["Price_y"]/merge_df2["Item ID"]).round(2)
+    merge_df2_renamed = merge_df2.rename(columns={"Age": "Purchase Count", "Gender": "Item Price", "Item ID": "null", "Price_y": "Total Purchase Value", "Item ID_y": "Item ID"})
+  
+profit_items = df2.sort_values('Total Purchase Value', ascending=False).head()
+profit_items.style.format({"Item Price": "${:.2f}", "Total Purchase Value": "${:.2f}"})
